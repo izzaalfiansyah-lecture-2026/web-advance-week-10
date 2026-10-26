@@ -1,0 +1,21 @@
+{
+  "products": [
+    {
+      "name": "Es Tung Tung",
+      "price": 10000,
+      "category": "Other",
+      "stock": 4,
+      "description": "",
+      "id": "oykNzAHCeko"
+    },
+    {
+      "name": "Telur Asin",
+      "price": 5000,
+      "category": "Other",
+      "stock": 40,
+      "description": "",
+      "id": "ZtVAbkEJjSs"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}
