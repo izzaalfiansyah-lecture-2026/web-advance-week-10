@@ -8,17 +8,13 @@ const productRoutes = require("./routes/products");
 const app = express();
 const PORT = process.env.PORT || 3333;
 
-// Middleware
 app.use(cors());
 app.use(express.json());
 
-// Test database connection
 testConnection();
 
-// Routes
 app.use("/api/products", productRoutes);
 
-// Health check endpoint
 app.get("/api/health", (req, res) => {
   res.json({
     success: true,
@@ -27,7 +23,6 @@ app.get("/api/health", (req, res) => {
   });
 });
 
-// Error handling middleware
 app.use((err, req, res, next) => {
   console.error("Error:", err);
   res.status(500).json({
@@ -36,7 +31,6 @@ app.use((err, req, res, next) => {
   });
 });
 
-// 404 handler
 app.use((req, res) => {
   res.status(404).json({
     success: false,
@@ -44,7 +38,6 @@ app.use((req, res) => {
   });
 });
 
-// Start server
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
   console.log(`📋 API Endpoints:`);

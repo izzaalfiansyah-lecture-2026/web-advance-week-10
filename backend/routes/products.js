@@ -3,7 +3,6 @@ const { pool } = require("../config/database");
 
 const router = express.Router();
 
-// GET all products
 router.get("/", async (req, res) => {
   try {
     const [rows] = await pool.execute(
@@ -24,7 +23,6 @@ router.get("/", async (req, res) => {
   }
 });
 
-// GET single product
 router.get("/:id", async (req, res) => {
   try {
     const [rows] = await pool.execute("SELECT * FROM products WHERE id = ?", [
@@ -51,12 +49,10 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// POST create new product
 router.post("/", async (req, res) => {
   try {
     const { name, price, category, stock, description } = req.body;
 
-    // Validation
     if (!name || !price || !category) {
       return res.status(400).json({
         success: false,
@@ -83,7 +79,6 @@ router.post("/", async (req, res) => {
       ],
     );
 
-    // Get the newly created product
     const [newProduct] = await pool.execute(
       "SELECT * FROM products WHERE id = ?",
       [result.insertId],
@@ -103,13 +98,11 @@ router.post("/", async (req, res) => {
   }
 });
 
-// PUT update product
 router.put("/:id", async (req, res) => {
   try {
     const { name, price, category, stock, description } = req.body;
     const productId = req.params.id;
 
-    // Check if product exists
     const [existing] = await pool.execute(
       "SELECT * FROM products WHERE id = ?",
       [productId],
@@ -122,7 +115,6 @@ router.put("/:id", async (req, res) => {
       });
     }
 
-    // Validation
     if (price && price <= 0) {
       return res.status(400).json({
         success: false,
@@ -144,7 +136,6 @@ router.put("/:id", async (req, res) => {
       ],
     );
 
-    // Get updated product
     const [updated] = await pool.execute(
       "SELECT * FROM products WHERE id = ?",
       [productId],
@@ -164,12 +155,10 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-// DELETE product
 router.delete("/:id", async (req, res) => {
   try {
     const productId = req.params.id;
 
-    // Check if product exists
     const [existing] = await pool.execute(
       "SELECT * FROM products WHERE id = ?",
       [productId],
