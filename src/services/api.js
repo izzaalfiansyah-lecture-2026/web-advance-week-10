@@ -1,4 +1,4 @@
-const API_BASE = "http://localhost:3333";
+const API_BASE = "http://localhost:3333/api";
 
 // Generic fetch function dengan error handling
 export const apiRequest = async (endpoint, options = {}) => {

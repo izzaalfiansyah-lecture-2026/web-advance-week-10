@@ -12,7 +12,7 @@ export const useProducts = () => {
       setLoading(true);
       setError(null);
       const response = await productAPI.getProducts();
-      setProducts(response);
+      setProducts(response.data);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -25,7 +25,7 @@ export const useProducts = () => {
     try {
       setLoading(true);
       const response = await productAPI.createProduct(productData);
-      setProducts((prev) => [response, ...prev]);
+      setProducts((prev) => [response.data, ...prev]);
       return response;
     } catch (err) {
       setError(err.message);
@@ -42,7 +42,7 @@ export const useProducts = () => {
       const response = await productAPI.updateProduct(id, productData);
       setProducts((prev) =>
         prev.map((product) =>
-          product.id === parseInt(id) ? response : product,
+          product.id === parseInt(id) ? response.data : product,
         ),
       );
       return response;
