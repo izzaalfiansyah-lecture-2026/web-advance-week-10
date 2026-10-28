@@ -1,6 +1,5 @@
 const API_BASE = "http://localhost:3333/api";
 
-// Generic fetch function dengan error handling
 export const apiRequest = async (endpoint, options = {}) => {
   try {
     const response = await fetch(`${API_BASE}${endpoint}`, {
@@ -24,7 +23,6 @@ export const apiRequest = async (endpoint, options = {}) => {
   }
 };
 
-// Product API functions
 export const productAPI = {
   getProducts: () => apiRequest("/products"),
 

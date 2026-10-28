@@ -6,7 +6,6 @@ export const useProducts = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Fetch all products
   const fetchProducts = async () => {
     try {
       setLoading(true);
@@ -20,7 +19,6 @@ export const useProducts = () => {
     }
   };
 
-  // Create new product
   const createProduct = async (productData) => {
     try {
       setLoading(true);
@@ -35,7 +33,6 @@ export const useProducts = () => {
     }
   };
 
-  // Update product
   const updateProduct = async (id, productData) => {
     try {
       setLoading(true);
@@ -54,7 +51,6 @@ export const useProducts = () => {
     }
   };
 
-  // Delete product
   const deleteProduct = async (id) => {
     try {
       setLoading(true);
@@ -71,7 +67,6 @@ export const useProducts = () => {
     }
   };
 
-  // Fetch products on component mount
   useEffect(() => {
     fetchProducts();
   }, []);

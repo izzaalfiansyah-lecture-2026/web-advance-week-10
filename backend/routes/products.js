@@ -3,11 +3,17 @@ const { pool } = require("../config/database");
 
 const router = express.Router();
 
+const query = {
+  getAll: `SELECT * FROM products ORDER BY created_at DESC`,
+  getById: `SELECT * FROM products WHERE id = ?`,
+  insertOne: `INSERT INTO products (name, price, category, stock, description) VALUES (?, ?, ?, ?, ?)`,
+  updateOne: `UPDATE products SET name = ?, price = ?, category = ?, stock = ?, description = ? WHERE id = ?`,
+  deleteOne: `DELETE FROM products WHERE id = ?`,
+};
+
 router.get("/", async (req, res) => {
   try {
-    const [rows] = await pool.execute(
-      "SELECT * FROM products ORDER BY created_at DESC",
-    );
+    const [rows] = await pool.execute(query.getAll);
 
     res.json({
       success: true,
@@ -25,9 +31,7 @@ router.get("/", async (req, res) => {
 
 router.get("/:id", async (req, res) => {
   try {
-    const [rows] = await pool.execute("SELECT * FROM products WHERE id = ?", [
-      req.params.id,
-    ]);
+    const [rows] = await pool.execute(query.getById, [req.params.id]);
 
     if (rows.length === 0) {
       return res.status(404).json({
@@ -67,22 +71,15 @@ router.post("/", async (req, res) => {
       });
     }
 
-    const [result] = await pool.execute(
-      `INSERT INTO products (name, price, category, stock, description)
-       VALUES (?, ?, ?, ?, ?)`,
-      [
-        name,
-        parseFloat(price),
-        category,
-        parseInt(stock) || 0,
-        description || "",
-      ],
-    );
+    const [result] = await pool.execute(query.insertOne, [
+      name,
+      parseFloat(price),
+      category,
+      parseInt(stock) || 0,
+      description || "",
+    ]);
 
-    const [newProduct] = await pool.execute(
-      "SELECT * FROM products WHERE id = ?",
-      [result.insertId],
-    );
+    const [newProduct] = await pool.execute(query.getById, [result.insertId]);
 
     res.status(201).json({
       success: true,
@@ -103,10 +100,7 @@ router.put("/:id", async (req, res) => {
     const { name, price, category, stock, description } = req.body;
     const productId = req.params.id;
 
-    const [existing] = await pool.execute(
-      "SELECT * FROM products WHERE id = ?",
-      [productId],
-    );
+    const [existing] = await pool.execute(query.getById, [productId]);
 
     if (existing.length === 0) {
       return res.status(404).json({
@@ -122,24 +116,16 @@ router.put("/:id", async (req, res) => {
       });
     }
 
-    await pool.execute(
-      `UPDATE products
-       SET name = ?, price = ?, category = ?, stock = ?, description = ?
-       WHERE id = ?`,
-      [
-        name || existing[0].name,
-        price ? parseFloat(price) : existing[0].price,
-        category || existing[0].category,
-        stock ? parseInt(stock) : existing[0].stock,
-        description || existing[0].description,
-        productId,
-      ],
-    );
+    await pool.execute(query.updateOne, [
+      name || existing[0].name,
+      price ? parseFloat(price) : existing[0].price,
+      category || existing[0].category,
+      stock ? parseInt(stock) : existing[0].stock,
+      description || existing[0].description,
+      productId,
+    ]);
 
-    const [updated] = await pool.execute(
-      "SELECT * FROM products WHERE id = ?",
-      [productId],
-    );
+    const [updated] = await pool.execute(query.getById, [productId]);
 
     res.json({
       success: true,
@@ -159,10 +145,7 @@ router.delete("/:id", async (req, res) => {
   try {
     const productId = req.params.id;
 
-    const [existing] = await pool.execute(
-      "SELECT * FROM products WHERE id = ?",
-      [productId],
-    );
+    const [existing] = await pool.execute(query.getById, [productId]);
 
     if (existing.length === 0) {
       return res.status(404).json({
@@ -171,7 +154,7 @@ router.delete("/:id", async (req, res) => {
       });
     }
 
-    await pool.execute("DELETE FROM products WHERE id = ?", [productId]);
+    await pool.execute(query.deleteOne, [productId]);
 
     res.json({
       success: true,
